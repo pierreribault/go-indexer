@@ -12,9 +12,9 @@ RUN go build -o /go-indexer /app/cmd/main.go
 
 ENTRYPOINT ["/go-indexer"]
 
-FROM alpine
+FROM alpine:3.15
 WORKDIR /app
 
-COPY --from=builder /go-indexer /go-indexer
+COPY --from=Builder /go-indexer /go-indexer
 
 ENTRYPOINT ["/go-indexer"]
