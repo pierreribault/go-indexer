@@ -7,7 +7,7 @@ import (
 // Entry represent a new event when something happens in Download Folder
 type Entry struct {
 	event fsnotify.Event
-	name string
+	name  string
 	path  string
 	files []string
 	isDir bool
@@ -17,8 +17,8 @@ type Entry struct {
 func newEntry(event fsnotify.Event, name string, path string, files []string, isDir bool) Entry {
 	return Entry{
 		event: event,
-		name: name,
-		path: path,
+		name:  name,
+		path:  path,
 		files: files,
 		isDir: isDir,
 	}

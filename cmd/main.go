@@ -5,19 +5,18 @@ import (
 	"github.com/pierreribault/go-plex-transfer/pkg/indexer"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
 var (
-	uid = os.Getenv("USER_ID")
-	gid = os.Getenv("GROUP_ID")
+	HostFolderName = os.Getenv("DOWNLOAD_FOLDER_NAME")
 )
 
 const (
-	DOWNLOADS = "/app/storage/downloads"
-	MOVIES    = "/app/storage/movies"
-	TVSHOWS   = "/app/storage/tvshows"
+	DownloadHostFolder = "Téléchargement"
+	Downloads          = "/app/storage/downloads"
+	Movies             = "/app/storage/movies"
+	TVShows            = "/app/storage/tvshows"
 )
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 
 	defer watcher.Close()
 
-	log.Println("Indexer started, watching: ", DOWNLOADS)
+	log.Println("Indexer started, watching: ", Downloads)
 
 	done := make(chan bool)
 	go func() {
@@ -49,7 +48,7 @@ func main() {
 		}
 	}()
 
-	err = watcher.Add(DOWNLOADS)
+	err = watcher.Add(Downloads)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,15 +94,5 @@ func RemoveEvent(event fsnotify.Event) {
 }
 
 func CreateIndexer(event fsnotify.Event) indexer.Service {
-	userId, err := strconv.Atoi(uid)
-	if err != nil {
-		log.Fatalln("USER_ID is not define, or not castable as an integer!")
-	}
-
-	groupId, err := strconv.Atoi(gid)
-	if err != nil {
-		log.Fatalln("GROUP_ID is not define, or not castable as an integer!")
-	}
-
-	return indexer.New(event, MOVIES, TVSHOWS, userId, groupId)
+	return indexer.New(event, Movies, TVShows, HostFolderName)
 }

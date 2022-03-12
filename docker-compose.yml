@@ -7,8 +7,7 @@ services:
       context: .
       target: builder
     environment:
-      USER_ID: "${UID:-501}"
-      GROUP_ID: "${GID:-20}"
+      DOWNLOAD_FOLDER_NAME: "downloads"
     volumes:
       - "./storage/downloads:/app/storage/downloads"
       - "./storage/movies:/app/storage/movies"

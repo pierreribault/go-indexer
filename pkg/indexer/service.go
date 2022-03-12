@@ -15,21 +15,19 @@ const (
 )
 
 type Service struct {
-	entry       Entry
-	moviesPath  string
-	tvShowsPath string
-	uid int
-	gid int
+	entry        Entry
+	moviesPath   string
+	tvShowsPath  string
+	downloadPath string
 }
 
 // New permit to build a new EntryService object
-func New(event fsnotify.Event, moviesPath string, tvShowsPath string, uid int, gid int) Service {
+func New(event fsnotify.Event, moviesPath string, tvShowsPath string, downloadPath string) Service {
 	return Service{
-		entry:       newEntry(event, extractName(event.Name), event.Name, []string{}, false),
-		moviesPath:  moviesPath,
-		tvShowsPath: tvShowsPath,
-		uid: uid,
-		gid: gid,
+		entry:        newEntry(event, extractName(event.Name), event.Name, []string{}, false),
+		moviesPath:   moviesPath,
+		tvShowsPath:  tvShowsPath,
+		downloadPath: downloadPath,
 	}
 }
 
@@ -94,10 +92,6 @@ func (s *Service) CreateSymbolicLink() error {
 		return err
 	}
 
-	if err := os.Chown(output, s.uid, s.gid); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -125,5 +119,8 @@ func (s *Service) generateTargetAndOutputPath() (string, string) {
 		path = s.tvShowsPath
 	}
 
-	return s.entry.GetPath(), fmt.Sprintf("%s/%s", path, s.entry.GetName())
+	target := fmt.Sprintf("../%s/%s", s.downloadPath, s.entry.GetName())
+	output := fmt.Sprintf("%s/%s", path, s.entry.GetName())
+
+	return target, output
 }
