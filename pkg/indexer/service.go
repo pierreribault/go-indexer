@@ -38,6 +38,8 @@ func (s *Service) Analyse() error {
 		if len(s.entry.GetFiles()) == 0 {
 			return errors.New(fmt.Sprintf("any mkv find in %s", s.entry.GetPath()))
 		}
+	} else {
+		s.entry.files = append(s.entry.files, s.entry.GetPath())
 	}
 
 	return nil
