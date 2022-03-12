@@ -1,10 +1,11 @@
-version: "3"
+version: "3.4"
 
 services:
   go-indexer:
+    image: pierreribault/go-indexer
     build:
       context: .
-    image: pierreribault/go-indexer
+      target: builder
     volumes:
       - "./storage/downloads:/app/storage/downloads"
       - "./storage/movies:/app/storage/movies"

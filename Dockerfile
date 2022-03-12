@@ -1,4 +1,4 @@
-FROM golang:alpine
+FROM golang:alpine as Builder
 WORKDIR /app
 
 COPY go.mod .
@@ -9,5 +9,12 @@ COPY cmd cmd
 COPY pkg pkg
 
 RUN go build -o /go-indexer /app/cmd/main.go
+
+ENTRYPOINT ["/go-indexer"]
+
+FROM alpine
+WORKDIR /app
+
+COPY --from=builder /go-indexer /go-indexer
 
 ENTRYPOINT ["/go-indexer"]
