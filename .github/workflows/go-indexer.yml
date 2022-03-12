@@ -1,0 +1,26 @@
+name: Go Indexer
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Publish go-indexer on dockerhub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Run hadolint on Dockerfile
+        if: github.event_name == 'push'
+        run: "docker run --rm -i hadolint/hadolint hadolint < Dockerfile"
+
+      - name: Publish go-indexer to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: pierreribault/go-indexer
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: Dockerfile
+          buildoptions: "--pull"
+          tags: "latest"

@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  go-indexer:
+    build:
+      context: .
+    image: pierreribault/go-indexer
+    volumes:
+      - "./storage/downloads:/app/storage/downloads"
+      - "./storage/movies:/app/storage/movies"
+      - "./storage/tvshows:/app/storage/tvshows"
