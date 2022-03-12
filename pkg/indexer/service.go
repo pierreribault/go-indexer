@@ -18,14 +18,18 @@ type Service struct {
 	entry       Entry
 	moviesPath  string
 	tvShowsPath string
+	uid int
+	gid int
 }
 
 // New permit to build a new EntryService object
-func New(event fsnotify.Event, moviesPath string, tvShowsPath string) Service {
+func New(event fsnotify.Event, moviesPath string, tvShowsPath string, uid int, gid int) Service {
 	return Service{
 		entry:       newEntry(event, extractName(event.Name), event.Name, []string{}, false),
 		moviesPath:  moviesPath,
 		tvShowsPath: tvShowsPath,
+		uid: uid,
+		gid: gid,
 	}
 }
 
@@ -86,7 +90,15 @@ func (s *Service) CreateSymbolicLink() error {
 	target, output := s.generateTargetAndOutputPath()
 
 	log.Println("Try to create a symlink to:", output)
-	return os.Symlink(target, output)
+	if err := os.Symlink(target, output); err != nil {
+		return err
+	}
+
+	if err := os.Chown(output, s.uid, s.gid); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // RemoveSymbolicLink will remove every ln -s with a specific name in other directories

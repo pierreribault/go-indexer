@@ -4,7 +4,14 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/pierreribault/go-plex-transfer/pkg/indexer"
 	"log"
+	"os"
+	"strconv"
 	"time"
+)
+
+var (
+	uid = os.Getenv("USER_ID")
+	gid = os.Getenv("GROUP_ID")
 )
 
 const (
@@ -66,7 +73,7 @@ func NewEventProvided(event fsnotify.Event) {
 func CreateEvent(event fsnotify.Event) {
 	log.Println("New created event provided: ", event.Name)
 
-	idx := indexer.New(event, MOVIES, TVSHOWS)
+	idx := CreateIndexer(event)
 	if err := idx.Analyse(); err != nil {
 		log.Println(err)
 	}
@@ -81,8 +88,22 @@ func CreateEvent(event fsnotify.Event) {
 func RemoveEvent(event fsnotify.Event) {
 	log.Println("New removed event provided: ", event.Name)
 
-	idx := indexer.New(event, MOVIES, TVSHOWS)
+	idx := CreateIndexer(event)
 
 	idx.RemoveSymbolicLink()
 	log.Println("Symlink removed")
+}
+
+func CreateIndexer(event fsnotify.Event) indexer.Service {
+	userId, err := strconv.Atoi(uid)
+	if err != nil {
+		log.Fatalln("USER_ID is not define, or not castable as an integer!")
+	}
+
+	groupId, err := strconv.Atoi(gid)
+	if err != nil {
+		log.Fatalln("GROUP_ID is not define, or not castable as an integer!")
+	}
+
+	return indexer.New(event, MOVIES, TVSHOWS, userId, groupId)
 }
