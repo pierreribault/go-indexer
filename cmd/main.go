@@ -13,7 +13,6 @@ var (
 )
 
 const (
-	DownloadHostFolder = "Téléchargement"
 	Downloads          = "/app/storage/downloads"
 	Movies             = "/app/storage/movies"
 	TVShows            = "/app/storage/tvshows"
