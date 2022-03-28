@@ -12,17 +12,17 @@ RUN go build -o /go-indexer /app/cmd/watch/main.go
 
 CMD ["/go-indexer"]
 
-# Build application
+# Build Go-Indexer
 #
 FROM setup AS builder
 ARG CGO_ENABLED=0
 RUN apt-get update \
-    && apt-get install -y upx
-RUN go build -ldflags "-s -w" -o /go-indexer /app/cmd/watch/main.go
-RUN upx --best --lzma /go-indexer
+    && apt-get install -y upx \
+    && go build -ldflags "-s -w" -o /go-indexer /app/cmd/watch/main.go \
+    && upx --best --lzma /go-indexer
 
-# Store application in alpine image
+# Store Go-Indexer in a scratch image
 #
-FROM scratch AS production
+FROM alpine:3.15 AS production
 COPY --from=builder /go-indexer /go-indexer
 CMD [ "/go-indexer" ]
