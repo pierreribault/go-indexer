@@ -17,7 +17,7 @@ CMD ["/go-indexer"]
 FROM setup AS builder
 ARG CGO_ENABLED=0
 RUN apt-get update \
-    && apt-get install -y upx \
+    && apt-get install --no-install-recommends -y upx \
     && go build -ldflags "-s -w" -o /go-indexer /app/cmd/watch/main.go \
     && upx --best --lzma /go-indexer
 
