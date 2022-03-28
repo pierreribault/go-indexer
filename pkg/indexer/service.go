@@ -14,6 +14,7 @@ import (
 const (
 	MkvExtension = ".mkv"
 	MP4Extension = ".mp4"
+	M4VExtension = ".m4v"
 )
 
 type Service struct {
