@@ -1,4 +1,4 @@
-FROM golang:alpine as Builder
+FROM golang:1.18 AS setup
 WORKDIR /app
 
 COPY go.mod .
@@ -8,13 +8,21 @@ RUN go mod download
 COPY cmd cmd
 COPY pkg pkg
 
-RUN go build -o /go-indexer /app/cmd/main.go
+RUN go build -o /go-indexer /app/cmd/watch/main.go
 
-ENTRYPOINT ["/go-indexer"]
+CMD ["/go-indexer"]
 
-FROM alpine:3.15
-WORKDIR /app
+# Build application
+#
+FROM setup AS builder
+ARG CGO_ENABLED=0
+RUN apt-get update \
+    && apt-get install -y upx
+RUN go build -ldflags "-s -w" -o /go-indexer /app/cmd/watch/main.go
+RUN upx --best --lzma /go-indexer
 
-COPY --from=Builder /go-indexer /go-indexer
-
-ENTRYPOINT ["/go-indexer"]
+# Store application in alpine image
+#
+FROM scratch AS production
+COPY --from=builder /go-indexer /go-indexer
+CMD [ "/go-indexer" ]

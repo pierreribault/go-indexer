@@ -1,0 +1,8 @@
+version: "3.4"
+
+services:
+  go-indexer:
+    image: pierreribault/go-indexer:prod
+    build:
+      context: .
+      target: production

@@ -2,13 +2,12 @@ version: "3.4"
 
 services:
   go-indexer:
-    image: pierreribault/go-indexer
+    image: pierreribault/go-indexer:latest
     build:
       context: .
-      target: builder
+      target: setup
     environment:
       DOWNLOAD_FOLDER_NAME: "downloads"
     volumes:
       - "./storage/downloads:/app/storage/downloads"
-      - "./storage/movies:/app/storage/movies"
-      - "./storage/tvshows:/app/storage/tvshows"
+      - "./storage/medias:/app/storage/medias"

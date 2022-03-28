@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/fsnotify/fsnotify"
-	"github.com/pierreribault/go-plex-transfer/pkg/indexer"
 	"log"
 	"os"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
+	"github.com/pierreribault/go-plex-transfer/pkg/indexer"
 )
 
 var (
@@ -13,9 +14,8 @@ var (
 )
 
 const (
-	Downloads          = "/app/storage/downloads"
-	Movies             = "/app/storage/movies"
-	TVShows            = "/app/storage/tvshows"
+	Downloads = "/app/storage/downloads"
+	Medias    = "/app/storage/medias"
 )
 
 func main() {
@@ -93,5 +93,5 @@ func RemoveEvent(event fsnotify.Event) {
 }
 
 func CreateIndexer(event fsnotify.Event) indexer.Service {
-	return indexer.New(event, Movies, TVShows, HostFolderName)
+	return indexer.New(event, Medias, HostFolderName)
 }
